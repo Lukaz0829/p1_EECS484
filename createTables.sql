@@ -1,19 +1,19 @@
-CREATE SEQUENCE user_id 
+CREATE SEQUENCE user_id_seq 
     START WITH 1 
     INCREMENT BY 1;
-CREATE SEQUENCE city_id
+CREATE SEQUENCE city_id_seq 
     START WITH 1 
     INCREMENT BY 1;
-CREATE SEQUENCE program_id
+CREATE SEQUENCE program_id_seq 
     START WITH 1 
     INCREMENT BY 1;
-CREATE SEQUENCE event_id
+CREATE SEQUENCE event_id_seq 
     START WITH 1 
     INCREMENT BY 1;
-CREATE SEQUENCE album_id
+CREATE SEQUENCE album_id_seq 
     START WITH 1
     INCREMENT BY 1;
-CREATE SEQUENCE photo_id
+CREATE SEQUENCE photo_id_seq 
     START WITH 1 
     INCREMENT BY 1;
 
@@ -36,18 +36,18 @@ CREATE TABLE Friends (
     FOREIGN KEY (user2_id) REFERENCES Users(user_id)
 );
 
-CREATE TRIGGER Order_Friend_Pairs
-    BEFORE INSERT ON Friends
-    FOR EACH ROW
-        DECLARE temp INTEGER;
-        BEGIN
-            IF :NEW.user1_id > :NEW.user2_id THEN
-                temp := :NEW.user2_id;
-                :NEW.user2_id := :NEW.user1_id;
-                :NEW.user1_id := temp;
-            END IF;
-        END;
-/
+-- CREATE TRIGGER Order_Friend_Pairs
+--     BEFORE INSERT ON Friends
+--     FOR EACH ROW
+--         DECLARE temp INTEGER;
+--         BEGIN
+--             IF :NEW.user1_id > :NEW.user2_id THEN
+--                 temp := :NEW.user2_id;
+--                 :NEW.user2_id := :NEW.user1_id;
+--                 :NEW.user1_id := temp;
+--             END IF;
+--         END;
+-- /
 
 
 -- Cities
