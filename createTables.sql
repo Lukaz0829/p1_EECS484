@@ -1,21 +1,3 @@
-CREATE SEQUENCE user_id_seq 
-    START WITH 1 
-    INCREMENT BY 1;
-CREATE SEQUENCE city_id_seq 
-    START WITH 1 
-    INCREMENT BY 1;
-CREATE SEQUENCE program_id_seq 
-    START WITH 1 
-    INCREMENT BY 1;
-CREATE SEQUENCE event_id_seq 
-    START WITH 1 
-    INCREMENT BY 1;
-CREATE SEQUENCE album_id_seq 
-    START WITH 1
-    INCREMENT BY 1;
-CREATE SEQUENCE photo_id_seq 
-    START WITH 1 
-    INCREMENT BY 1;
 
 -- Friends
 CREATE TABLE Users (
@@ -36,18 +18,18 @@ CREATE TABLE Friends (
     FOREIGN KEY (user2_id) REFERENCES Users(user_id)
 );
 
--- CREATE TRIGGER Order_Friend_Pairs
---     BEFORE INSERT ON Friends
---     FOR EACH ROW
---         DECLARE temp INTEGER;
---         BEGIN
---             IF :NEW.user1_id > :NEW.user2_id THEN
---                 temp := :NEW.user2_id;
---                 :NEW.user2_id := :NEW.user1_id;
---                 :NEW.user1_id := temp;
---             END IF;
---         END;
--- /
+CREATE TRIGGER Order_Friend_Pairs
+    BEFORE INSERT ON Friends
+    FOR EACH ROW
+        DECLARE temp INTEGER;
+        BEGIN
+            IF :NEW.user1_id > :NEW.user2_id THEN
+                temp := :NEW.user2_id;
+                :NEW.user2_id := :NEW.user1_id;
+                :NEW.user1_id := temp;
+            END IF;
+        END;
+/
 
 
 -- Cities
@@ -55,23 +37,22 @@ CREATE TABLE Cities (
     city_id INTEGER PRIMARY KEY,
     city_name VARCHAR2(100) NOT NULL,
     state_name VARCHAR2(100) NOT NULL,
-    country_name VARCHAR2(100) NOT NULL
+    country_name VARCHAR2(100) NOT NULL,
+    UNIQUE (city_name, state_name, country_name)
 );
 
 -- User_Current_Cities
 CREATE TABLE User_Current_Cities (
-    user_id INTEGER NOT NULL,
+    user_id INTEGER PRIMARY KEY,
     current_city_id INTEGER NOT NULL,
-    PRIMARY KEY (user_id, current_city_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (current_city_id) REFERENCES Cities(city_id)
 );
 
 -- User_Hometown_Cities
 CREATE TABLE User_Hometown_Cities (
-    user_id INTEGER NOT NULL,
+    user_id INTEGER PRIMARY KEY,
     hometown_city_id INTEGER NOT NULL,
-    PRIMARY KEY (user_id, hometown_city_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (hometown_city_id) REFERENCES Cities(city_id)
 );
@@ -92,15 +73,15 @@ CREATE TABLE Programs (
     program_id INTEGER PRIMARY KEY,
     institution VARCHAR2(100) NOT NULL,
     concentration VARCHAR2(100) NOT NULL,
-    degree VARCHAR2(100) NOT NULL
+    degree VARCHAR2(100) NOT NULL,
+    UNIQUE (institution, concentration, degree)
 );
 
 -- Education
 CREATE TABLE Education (
-    user_id INTEGER NOT NULL,
+    user_id INTEGER PRIMARY KEY,
     program_id INTEGER NOT NULL,
     program_year INTEGER NOT NULL,
-    PRIMARY KEY (user_id, program_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (program_id) REFERENCES Programs(program_id)
 );
@@ -168,3 +149,24 @@ ALTER TABLE Albums
 ADD CONSTRAINT covered_by_photo
 FOREIGN KEY (cover_photo_id) REFERENCES Photos(photo_id)
 INITIALLY DEFERRED DEFERRABLE;
+
+CREATE SEQUENCE city_id_seq 
+    START WITH 1 
+    INCREMENT BY 1;
+CREATE TRIGGER city_id_seq
+    BEFORE INSERT ON Cities
+    FOR EACH ROW
+        BEGIN
+            SELECT city_id_seq.NEXTVAL INTO :NEW.city_id FROM DUAL;
+        END;
+/
+CREATE SEQUENCE program_id_seq 
+    START WITH 1 
+    INCREMENT BY 1;
+CREATE TRIGGER program_id_seq 
+    BEFORE INSERT ON Programs
+    FOR EACH ROW
+        BEGIN
+            SELECT program_id_seq.NEXTVAL INTO :NEW.program_id FROM DUAL;
+        END;
+/
