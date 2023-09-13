@@ -33,5 +33,5 @@ INSERT INTO Education(user_id, program_id, program_year)
 SELECT DISTINCT Users.user_id, Programs.program_id, pu.program_year
 FROM project1.Public_User_Information pu
 JOIN Users ON pu.user_id = Users.user_id
-JOIN Programs ON pu.institution_name = Programs.institution
+JOIN Programs ON pu.institution_name = Programs.institution AND pu.program_concentration = Programs.concentration AND pu.program_degree = Programs.degree
 WHERE pu.institution_name IS NOT NULL;
