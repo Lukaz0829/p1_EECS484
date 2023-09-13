@@ -1,5 +1,5 @@
 
--- Friends
+-- Users
 CREATE TABLE Users (
     user_id INTEGER PRIMARY KEY,
     first_name VARCHAR2(100) NOT NULL,
