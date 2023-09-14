@@ -111,23 +111,25 @@ create table Participants(
     confirmation VARCHAR2(100) not null,
     primary key (event_id, user_id),
     FOREIGN KEY (event_id) REFERENCES User_Events(event_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CHECK (confirmation IN ('Attending', 'Unsure', 'Declines', 'Not_Replied'))
 );
 
 create table Albums(
-    album_id INTEGER not null primary key,
+    album_id INTEGER PRIMARY KEY,
     album_owner_id INTEGER not null,
     album_name VARCHAR2(100) not null,
     album_created_time TIMESTAMP not null,
     album_modified_time TIMESTAMP,
     album_link VARCHAR2(2000) not null,
     album_visibility VARCHAR2(100) not null,
-    cover_photo_id INTEGER not null,
-    foreign key (album_owner_id) references Users(user_id)
+    cover_photo_id INTEGER,
+    foreign key (album_owner_id) references Users(user_id),
+    CHECK (album_visibility IN ('Everyone', 'Friends', 'Friends_Of_Friends', 'Myself'))
 );
 
 create table Photos(
-    photo_id INTEGER not null primary key,
+    photo_id INTEGER PRIMARY KEY,
     album_id INTEGER not null,
     photo_caption VARCHAR2(2000),
     photo_created_time TIMESTAMP not null,
