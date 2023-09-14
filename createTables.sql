@@ -134,23 +134,27 @@ create table Photos(
     photo_caption VARCHAR2(2000),
     photo_created_time TIMESTAMP not null,
     photo_modified_time TIMESTAMP,
-    photo_link VARCHAR2(2000) not null,
-    FOREIGN KEY (album_id) REFERENCES Albums(album_id)
+    photo_link VARCHAR2(2000) not null
 );
 
 create table Tags(
-    tag_photo_id INTEGER not null,
-    tag_subject_id INTEGER not null,
-    tag_created_time TIMESTAMP not null,
-    tag_x NUMBER not null,
-    tag_y NUMBER not null,
+    tag_photo_id INTEGER NOT NULL,
+    tag_subject_id INTEGER NOT NULL,
+    tag_created_time TIMESTAMP NOT NULL,
+    tag_x NUMBER NOT NULL,
+    tag_y NUMBER NOT NULL,
     primary key (tag_photo_id, tag_subject_id),
-    foreign key (tag_photo_id) references Photos(photo_id)
+    foreign key (tag_subject_id) references Users(user_id)
 );
 
 ALTER TABLE Albums
 ADD CONSTRAINT covered_by_photo
 FOREIGN KEY (cover_photo_id) REFERENCES Photos(photo_id)
+INITIALLY DEFERRED DEFERRABLE;
+
+ALTER TABLE Photos
+ADD CONSTRAINT photo_album
+FOREIGN KEY (album_id) REFERENCES Albums(album_id)
 INITIALLY DEFERRED DEFERRABLE;
 
 CREATE SEQUENCE city_id_seq 

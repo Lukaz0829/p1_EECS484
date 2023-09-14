@@ -50,9 +50,19 @@ FROM project1.Public_Photo_Information pp
 JOIN Users on pp.owner_id = Users.user_id;
 
 INSERT INTO Photos (photo_id, album_id, photo_caption, photo_created_time, photo_modified_time, photo_link)
-SELECT DISTINCT photo_id, album_id, photo_caption, photo_created_time, photo_modified_time, photo_link
-FROM project1.Public_Photo_Information
+SELECT DISTINCT photo_id, Albums.album_id, photo_caption, photo_created_time, photo_modified_time, photo_link
+FROM project1.Public_Photo_Information pp
+JOIN Albums on pp.album_id = Albums.album_id;
+
+UPDATE Albums
+SET cover_photo_id = (
+    SELECT cover_photo_id
+    FROM Photos
+    WHERE Albums.album_id = Photos.album_id
+)
 
 INSERT INTO Tags (tag_photo_id, tag_subject_id, tag_created_time, tag_x, tag_y)
-SELECT DISTINCT photo_id, tag_subject_id, tag_created_time, tag_x_coordinate, tag_y_coordinate
-FROM project1.Public_Tag_Information;
+SELECT DISTINCT Photos.photo_id, tag_subject_id, tag_created_time, tag_x_coordinate, tag_y_coordinate
+FROM project1.Public_Tag_Information pt
+JOIN Users on pt.tag_subject_id = Users.user_id
+JOIN Photos on pt.photo_id = Photos.photo_id;
