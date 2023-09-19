@@ -123,7 +123,7 @@ create table Albums(
     album_modified_time TIMESTAMP,
     album_link VARCHAR2(2000) not null,
     album_visibility VARCHAR2(100) not null,
-    cover_photo_id INTEGER,
+    cover_photo_id INTEGER not null,
     foreign key (album_owner_id) references Users(user_id),
     CHECK (album_visibility IN ('Everyone', 'Friends', 'Friends_Of_Friends', 'Myself'))
 );
@@ -144,21 +144,22 @@ create table Tags(
     tag_x NUMBER NOT NULL,
     tag_y NUMBER NOT NULL,
     primary key (tag_photo_id, tag_subject_id),
-    foreign key (tag_subject_id) references Users(user_id)
+    foreign key (tag_subject_id) references Users(user_id),
+    FOREIGN KEY (tag_photo_id) REFERENCES Photos(photo_id)
 );
 
 ALTER TABLE Albums
-ADD CONSTRAINT covered_by_photo
+ADD CONSTRAINT fk_photo_id
 FOREIGN KEY (cover_photo_id) REFERENCES Photos(photo_id)
 INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Photos
-ADD CONSTRAINT photo_album
+ADD CONSTRAINT fk_album_id
 FOREIGN KEY (album_id) REFERENCES Albums(album_id)
 INITIALLY DEFERRED DEFERRABLE;
 
-CREATE SEQUENCE city_id_seq 
-    START WITH 1 
+CREATE SEQUENCE city_id_seq
+    START WITH 1
     INCREMENT BY 1;
 CREATE TRIGGER city_id_seq
     BEFORE INSERT ON Cities
@@ -167,10 +168,10 @@ CREATE TRIGGER city_id_seq
             SELECT city_id_seq.NEXTVAL INTO :NEW.city_id FROM DUAL;
         END;
 /
-CREATE SEQUENCE program_id_seq 
-    START WITH 1 
+CREATE SEQUENCE program_id_seq
+    START WITH 1
     INCREMENT BY 1;
-CREATE TRIGGER program_id_seq 
+CREATE TRIGGER program_id_seq
     BEFORE INSERT ON Programs
     FOR EACH ROW
         BEGIN
